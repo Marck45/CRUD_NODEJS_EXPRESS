@@ -6,7 +6,7 @@ router.post('/', async (req, res) => {
 
     // req.body
     console.log(req.body);
-    const {_id,nome, valor, descricao, disponivel } = req.body;
+    const {nome, valor, descricao, disponivel } = req.body;
 
     if(!nome){
 
@@ -15,7 +15,6 @@ router.post('/', async (req, res) => {
     }
 
     const produto = {
-        _id,
         nome,
         valor,
         descricao,
@@ -86,10 +85,9 @@ router.patch('/:id', async (req, res)=>{
 
     const id = req.params.id;
 
-    const {_id, nome, valor, descricao, disponivel } = req.body;
+    const {nome, valor, descricao, disponivel } = req.body;
 
     const produto = {
-        _id,
         nome,
         valor,
         descricao,
