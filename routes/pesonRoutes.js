@@ -6,11 +6,11 @@ router.post('/', async (req, res) => {
 
     // req.body
     console.log(req.body);
-    const {_id, nome, valor, descricao, disponivel } = req.body;
+    const { _id, nome, valor, descricao, disponivel } = req.body;
 
-    if(!nome){
+    if (!nome) {
 
-        res.status(422).json({ error: 'O nome é obrigatorio'});
+        res.status(422).json({ error: 'O nome é obrigatorio' });
 
     }
 
@@ -24,18 +24,18 @@ router.post('/', async (req, res) => {
     }
 
     // created mongoose
- 
-    try{
-        // criando dados
-    await Produto.create(produto);
 
-    res.status(201).json({message: 'Produto inserido com sucesso'})
+    try {
+        // criando dados
+        await Produto.create(produto);
+
+        res.status(201).json({ message: 'Produto inserido com sucesso' })
 
     }
 
-    catch(error){
+    catch (error) {
 
-        res.status(500).json({error: error});
+        res.status(500).json({ error: error });
 
     }
 
@@ -43,16 +43,15 @@ router.post('/', async (req, res) => {
 
 
 // Read - leitura de dados
+router.get('/', async (req, res) => {
 
-router.get('/', async(req, res)=>{
+    try {
 
-    try{
-
-        const produtos = await Produto.find().sort({valor: 1});
+        const produtos = await Produto.find().sort({ valor: 1 });
 
         res.status(200).json(produtos)
 
-    } catch(error){
+    } catch (error) {
 
         res.status(500).json({ error: error });
     }
@@ -60,29 +59,28 @@ router.get('/', async(req, res)=>{
 })
 
 // criando rotas dinamicas
-
-router.get('/:id', async (req, res) =>{
+router.get('/:id', async (req, res) => {
     // extrair o dado da requisição
     const id = req.params.id;
 
-    try{
+    try {
 
-        const produto = await Produto.findOne({_id: id});
+        const produto = await Produto.findOne({ _id: id });
 
-        if(!produto){
-            res.status(422).json({message: 'Produto não encontrado'})
+        if (!produto) {
+            res.status(422).json({ message: 'Produto não encontrado' })
         }
 
         res.status(200).json(produto)
+        res.status(201).json({mensagem: 'Produto atualizado'});
 
-    } catch(error){
+    } catch (error) {
         res.status(500).json({ error: error });
     }
 })
 
-
 // update -atualizando dados (put, patch)
-router.patch('/:id', async (req, res)=>{
+router.put('/:_id', async (req, res) => {
 
     const id = req.params.id;
 
@@ -94,24 +92,23 @@ router.patch('/:id', async (req, res)=>{
         valor,
         descricao,
         disponivel,
-
     }
 
-    try{
+    try {
 
-        const updatedProduto = await Produto.updateOne({_id: id},produto);
+        const updatedProduto = await Produto.updateOne({ _id: _id }, produto);
 
-        if(updatedProduto.matchedCount === 0){
+        if (updatedProduto.matchedCount === 0) {
 
-            res.status(422).json({message: 'Produto não encontrado'});
+            res.status(422).json({ message: 'Produto não encontrado' });
 
         }
 
         res.status(200).json(produto);
 
     }
-    catch(error){
-        res.status(500).json({ error: error }); 
+    catch (error) {
+        res.status(500).json({ error: error });
     }
 
 })
@@ -119,30 +116,30 @@ router.patch('/:id', async (req, res)=>{
 
 // Delete - deletar dados
 
-router.delete('/:id', async (req, res) =>{
+router.delete('/:id', async (req, res) => {
 
     const id = req.params.id;
 
-    const produto = await Produto.findOne({_id: id});
+    const produto = await Produto.findOne({ _id: id });
 
-    if(!produto){
+    if (!produto) {
 
-        res.status(422).json({message: 'Produto não encontrado'});
+        res.status(422).json({ message: 'Produto não encontrado' });
 
         return;
     }
 
-    try{
+    try {
 
-        await Produto.deleteOne({_id: id});
+        await Produto.deleteOne({ _id: id });
 
-        res.status(200).json({ message: 'Produto removido com sucesso!'});
+        res.status(200).json({ message: 'Produto removido com sucesso!' });
 
     }
 
-    catch(error){
+    catch (error) {
 
-        res.status(500).json({ error: error }); 
+        res.status(500).json({ error: error });
     }
 
 })
