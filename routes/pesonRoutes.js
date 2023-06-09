@@ -6,7 +6,7 @@ router.post('/', async (req, res) => {
 
     // req.body
     console.log(req.body);
-    const { _id, nome, valor, descricao, disponivel } = req.body;
+    const { _id, nome, valor, descricao, disponivel, custo } = req.body;
 
     if (!nome) {
 
@@ -18,6 +18,7 @@ router.post('/', async (req, res) => {
         _id,
         nome,
         valor,
+        custo,
         descricao,
         disponivel,
 
@@ -84,12 +85,13 @@ router.put('/:_id', async (req, res) => {
 
     const id = req.params.id;
 
-    const { _id, nome, valor, descricao, disponivel } = req.body;
+    const { _id, nome, valor, custo, descricao, disponivel } = req.body;
 
     const produto = {
         _id,
         nome,
         valor,
+        custo,
         descricao,
         disponivel,
     }
