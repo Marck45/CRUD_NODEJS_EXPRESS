@@ -47,7 +47,7 @@ router.get('/', async (req, res) => {
 
     try {
 
-        const produtos = await Produto.find().sort({ valor: 1 });
+        const produtos = await Produto.find().sort({ _id: 1 });
 
         res.status(200).json(produtos)
 
