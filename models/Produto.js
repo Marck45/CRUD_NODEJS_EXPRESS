@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const Produto = mongoose.model('Produto', {
-    _id: String,
+    _id: Number,
     nome: String,
     valor: Number,
     custo: Number,
