@@ -5,7 +5,7 @@ const Produto = mongoose.model('Produto', {
     nome: String,
     valor: Number,
     descricao: String,
-    disponivel: Boolean,
+    disponivel: number,
 });
 
 
