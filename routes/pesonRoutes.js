@@ -37,7 +37,7 @@ router.post('/upload', upload.single('photo'), async (req, res) => {
   }
 });
 
-// Rotas CRUD para produtos
+
 // Read - leitura de dados
 router.get('/', async (req, res) => {
   try {
