@@ -11,7 +11,8 @@ const produtoSchema = new mongoose.Schema({
     quantidade: Number,
     validade: Date,
     lote: Number,
-    photo: Buffer, // Alterado para o tipo Buffer para armazenar dados binários da imagem
+    photo: Buffer,
+    firebaseUrl: String,
 });
 
 const Produto = mongoose.model('Produto', produtoSchema);

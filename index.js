@@ -11,10 +11,6 @@ const corsOptions = {
   origin: "http://localhost:4200",
   exposedHeaders: ["x-access-token"],
 };
-
-const storage = multer.memoryStorage(); // Armazena a imagem na memória antes de salvar
-const upload = multer({ storage });
-
 // forma de ler o JSON - middlewares
 
 app.use((req, res, next) => {
@@ -51,10 +47,6 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 // rotas da API
-
-const upPhotoRoutes = require("./routes/upPhoto.js");
-
-app.use("/upload", upPhotoRoutes);
 
 const personRoutes = require("./routes/pesonRoutes.js");
 
