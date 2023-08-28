@@ -65,6 +65,35 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Rota para filtrar produtos com base em critérios
+router.get('/filter', async (req, res) => {
+  try {
+    // Recupere o parâmetro de consulta "nome" da URL
+    const nomeFiltrado = req.query.nome;
+
+    // Verifique se o nome foi fornecido como parâmetro de consulta
+    if (!nomeFiltrado) {
+      throw new Error('Você deve fornecer um parâmetro de consulta "nome".');
+    }
+
+    // Filtrar os dados com base no nome
+    const produtosFiltrados = await Produto.find({ nome: { $regex: new RegExp(nomeFiltrado, 'i') } });
+
+    // Verifique se algum produto foi encontrado
+    if (produtosFiltrados.length === 0) {
+      throw new Error('Nenhum produto encontrado com o nome fornecido.');
+    }
+
+    // Retorne os produtos filtrados como resposta
+    res.json(produtosFiltrados);
+  } catch (error) {
+    // Captura e trata erros
+    res.status(400).json({ erro: error.message });
+  }
+});
+
+
+
 // criando rotas dinâmicas
 router.get('/:id', async (req, res) => {
   const id = req.params.id;
@@ -128,42 +157,5 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ error: error });
   }
 });
-
-// Rota para filtrar produtos com base em um critério (por exemplo, o nome do produto)
-router.get('/filter', async (req, res) => {
-  try {
-    // Obtenha o critério de filtragem da consulta
-    const { nome } = req.query;
-
-    // Crie um objeto de filtro com base no critério (você pode adicionar mais campos de filtro conforme necessário)
-    const filter = {};
-
-    // Verifique se um critério de filtragem (por exemplo, nome) foi especificado
-    if (nome) {
-      filter.nome = nome;
-    }
-
-    // Se nenhum critério de filtragem foi especificado, retorne todos os produtos
-    if (Object.keys(filter).length === 0) {
-      const todosProdutos = await Produto.find().sort({ _id: 1 });
-      return res.status(200).json(todosProdutos);
-    }
-
-    // Consulte o banco de dados usando o modelo Produto e aplique o filtro
-    const produtosFiltrados = await Produto.find(filter).sort({ _id: 1 });
-
-    // Verifique se foram encontrados produtos que correspondam ao filtro
-    if (produtosFiltrados.length === 0) {
-      return res.status(404).json({ message: 'Nenhum produto encontrado com base no filtro fornecido.' });
-    }
-
-    // Envie os produtos filtrados como resposta
-    res.status(200).json(produtosFiltrados);
-  } catch (error) {
-    res.status(500).json({ error: 'Erro ao filtrar produtos.' });
-  }
-});
-
-
 
 module.exports = router;
