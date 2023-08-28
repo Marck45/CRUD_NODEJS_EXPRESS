@@ -4,13 +4,17 @@ const mongoose = require("mongoose");
 const app = express();
 require("dotenv").config();
 const cors = require("cors");
-const multer = require("multer");
+const bodyParser = require('body-parser'); // Importe o body-parser
 const port = process.env.PORT || 3000;
 
 const corsOptions = {
   origin: "http://localhost:4200",
   exposedHeaders: ["x-access-token"],
 };
+
+// Use o body-parser para aumentar o limite de tamanho da carga útil
+app.use(bodyParser.json({ limit: '50mb' })); // Defina o limite como desejado (50 MB neste exemplo)
+
 // forma de ler o JSON - middlewares
 
 app.use((req, res, next) => {

@@ -80,9 +80,11 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update - atualizando dados (put, patch)
-router.put('/:_id', upload.single('photo'), async (req, res) => {
+router.put('/:_id', upload.single('photo'), uploadImage, async (req, res) => {
   try {
     const { _id, nome, valor, descricao, custo, marca, medida, quantidade, validade, lote } = req.body;
+
+    const imageUrl = req.produtoFirebaseUrl; 
 
     const produto = {
       nome,
@@ -94,7 +96,8 @@ router.put('/:_id', upload.single('photo'), async (req, res) => {
       quantidade,
       validade,
       lote,
-      photo: req.file ? req.file.buffer : undefined // Atualiza a imagem apenas se houver uma nova imagem na solicitação
+      photo: req.file ? req.file.buffer : undefined, // Atualiza a imagem apenas se houver uma nova imagem na solicitação
+      firebaseUrl: imageUrl,
     };
 
     const updatedProduto = await Produto.findByIdAndUpdate(_id, produto);
@@ -125,5 +128,42 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ error: error });
   }
 });
+
+// Rota para filtrar produtos com base em um critério (por exemplo, o nome do produto)
+router.get('/filter', async (req, res) => {
+  try {
+    // Obtenha o critério de filtragem da consulta
+    const { nome } = req.query;
+
+    // Crie um objeto de filtro com base no critério (você pode adicionar mais campos de filtro conforme necessário)
+    const filter = {};
+
+    // Verifique se um critério de filtragem (por exemplo, nome) foi especificado
+    if (nome) {
+      filter.nome = nome;
+    }
+
+    // Se nenhum critério de filtragem foi especificado, retorne todos os produtos
+    if (Object.keys(filter).length === 0) {
+      const todosProdutos = await Produto.find().sort({ _id: 1 });
+      return res.status(200).json(todosProdutos);
+    }
+
+    // Consulte o banco de dados usando o modelo Produto e aplique o filtro
+    const produtosFiltrados = await Produto.find(filter).sort({ _id: 1 });
+
+    // Verifique se foram encontrados produtos que correspondam ao filtro
+    if (produtosFiltrados.length === 0) {
+      return res.status(404).json({ message: 'Nenhum produto encontrado com base no filtro fornecido.' });
+    }
+
+    // Envie os produtos filtrados como resposta
+    res.status(200).json(produtosFiltrados);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao filtrar produtos.' });
+  }
+});
+
+
 
 module.exports = router;
