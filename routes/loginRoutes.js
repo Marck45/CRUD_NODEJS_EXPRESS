@@ -30,7 +30,7 @@ router.post('/', async(req, res)=>{
 
         res.json({ token });
 
-    }  catch(error){
+    } catch(error){
         console.error('Erro de login:', error.message);
         res.status(401).json({ message: 'Credenciais inválidas' });
     }
