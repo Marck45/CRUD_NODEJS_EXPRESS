@@ -56,6 +56,11 @@ const personRoutes = require("./routes/pesonRoutes.js");
 
 app.use("/produto", personRoutes);
 
+const loginRoutes = require("./routes/loginRoutes.js");
+
+app.use("/login", loginRoutes);
+
+
 // rota incial endpoint
 
 app.get("/", (req, res) => {
