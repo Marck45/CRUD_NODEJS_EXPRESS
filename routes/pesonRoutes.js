@@ -14,8 +14,6 @@ const upload = multer({
 // Rota para fazer o upload da imagem
 router.post('/', upload.single('photo'), uploadImage, async (req, res) => {
 
-  console.log(req.file);
-
   try {
     const { _id, nome, valor, descricao, custo, marca, medida, quantidade, validade, lote } = req.body;
 
@@ -42,8 +40,6 @@ router.post('/', upload.single('photo'), uploadImage, async (req, res) => {
       photo: req.file ? req.file.buffer : undefined, // Armazena a imagem apenas se houver uma nova imagem na solicitação
       firebaseUrl: imageUrl,
     });
-
-    console.log(produto)
 
     // Salve o produto no banco de dados
     await produto.save();
