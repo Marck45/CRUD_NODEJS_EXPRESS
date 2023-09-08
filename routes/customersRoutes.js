@@ -26,6 +26,12 @@ router.post("/", async (req, res) => {
       notification,
     });
 
+    const emailCheck = await Customer.findOne({email: email});
+
+    if(emailCheck){
+        return res.status(422).json({ msg: "E-mail já cadastrado" });     
+    }
+
     await customer.save();
 
     return res.status(201).json({ message: "Cliente cadastrado!" });
