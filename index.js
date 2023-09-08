@@ -47,7 +47,6 @@ app.use((req, res, next) => {
   });
 });
 
-
 app.use(express.json());
 
 // rotas da API
@@ -59,13 +58,12 @@ app.use("/produto", personRoutes);
 const loginRoutes = require("./routes/loginRoutes.js");
 
 app.use("/login", loginRoutes);
-
+ 
 
 // rota incial endpoint
-
 app.get("/", (req, res) => {
-  // mostrar req
-
+ 
+ // mostrar req
   res.json({ message: "oi Express!" });
 });
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const Produto = require('../models/Produto.js');
-const uploadImage = require('../service/firebase')
+const uploadImage = require('../service/firebase');
 
 const router = express.Router();
 
