@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const expensesSchema = new mongoose.Schema({
     nameExpense: String,
-    value: String,
+    value: Number,
     maturity: Date,
     description: String,
 });
