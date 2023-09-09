@@ -35,7 +35,9 @@ router.post("/", async (req, res) => {
     await customer.save();
 
     return res.status(201).json({ message: "Cliente cadastrado!" });
-  } catch (error) {}
+  } catch (error) {
+    return res.status(500).json({ error: "Erro ao cadastrar o cliente." });
+  }
 });
 
 // rota para atualizar customer

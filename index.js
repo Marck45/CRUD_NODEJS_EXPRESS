@@ -62,6 +62,10 @@ app.use("/login", loginRoutes);
 const customerRoutes = require("./routes/customersRoutes.js");
 
 app.use("/users", customerRoutes);
+
+const supplierRoutes = require("./routes/supplierRoutes.js");
+
+app.use("/supplier", supplierRoutes);
  
 
 // rota incial endpoint
