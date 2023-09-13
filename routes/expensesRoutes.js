@@ -39,6 +39,7 @@ router.put("/:_id", async (req, res) => {
     const { _id, nameExpense, value, maturity, description } = req.body;
 
     const expenses = {
+        _id,
         nameExpense,
         value,
         maturity,
