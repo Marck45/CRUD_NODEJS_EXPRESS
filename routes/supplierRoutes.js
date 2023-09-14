@@ -14,9 +14,16 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  try {
-    const { sales, work, email, phone1, phone2, address } = req.body;
+  const { sales, work, email, phone1, phone2, address } = req.body;
+    // checar se usuario existe
 
+    const userExists = await Supplier.findOne({ email: email });
+
+    if (userExists) {
+      return res.status(422).json({ msg: "E-mail já cadastrado" });
+    }
+
+  try {
     const supplier = new Supplier({
       sales,
       work,
