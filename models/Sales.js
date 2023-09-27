@@ -11,6 +11,6 @@ const salesSchema = new mongoose.Schema({
     finalValue: Number
 });
 
-const Sales = mongoose.model('Customer', salesSchema);
+const Sales = mongoose.model('Sales', salesSchema);
 
 module.exports = Sales;
