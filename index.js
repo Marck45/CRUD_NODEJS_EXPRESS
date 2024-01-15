@@ -74,6 +74,10 @@ app.use("/expenses", expensesRoutes);
 const salesRoutes = require("./routes/salesRoutes.js");
 
 app.use("/sales", salesRoutes);
+
+const companyRoutes = require("./routes/companyRoutes.js");
+
+app.use("/company", companyRoutes);
  
 
 // rota incial endpoint

@@ -15,17 +15,17 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { name, email, phone, notification, product, discount, discountValue, finalValue  } = req.body;
+    const { cod, name, email, product, discount, discountValue, finalValue, originalValue  } = req.body;
 
     const sales = new Sales({
+      cod,
       name,
       email,
-      phone,
-      notification,
       product,
       discount,
       discountValue,
-      finalValue
+      finalValue,
+      originalValue,
     });
 
     await sales.save();
@@ -40,18 +40,18 @@ router.post("/", async (req, res) => {
 
 router.put("/:_id", async (req, res) => {
   try {
-    const { _id, name, email, phone, notification, product, discount, discountValue, finalValue } = req.body;
+    const { _id, cod, name, email, product, discount, discountValue, finalValue, originalValue  } = req.body;
 
     const sales = {
         _id,
+        cod,
         name,
         email,
-        phone,
-        notification,
         product,
         discount,
         discountValue,
-        finalValue
+        finalValue,
+        originalValue,
     };
 
     const updateSales = await Sales.findByIdAndUpdate(_id, sales);
