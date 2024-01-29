@@ -1,11 +1,101 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const passport = require("passport");
 const Login = require("../models/Login.js");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
 
 const router = express.Router();
 
-// rota para criação de usuario
+// Configurar a estratégia do Google para autenticação social
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+    },
+    async function authenticateWithSocialMedia(accessToken, refreshToken, profile, done) {
+      try {
+        // Verificar se o usuário já existe no banco de dados com base no e-mail
+        const existingUser = await User.findOne({ email: profile.emails[0].value });
+    
+        if (existingUser) {
+          // Usuário já existe, retornar o usuário existente
+          return done(null, existingUser);
+        }
+    
+        // Se o usuário não existe, criar um novo usuário no banco de dados
+        const newUser = new User({
+          name: profile.displayName || profile.username,
+          email: profile.emails[0].value,
+          // Outros campos que você deseja armazenar no modelo de usuário
+        });
+    
+        // Salvar o novo usuário no banco de dados
+        await newUser.save();
+    
+        // Retornar o novo usuário
+        return done(null, newUser);
+      } catch (error) {
+        // Lidar com erros, log ou passar para o middleware de erro
+        return done(error, null);
+      }
+    }
+  )
+);
+// Configurar a estratégia do Facebook para autenticação social
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL: process.env.FACEBOOK_CALLBACK_URL,
+    },
+    async function (accessToken, refreshToken, profile, done) {
+      // Lógica para criar ou recuperar usuário no banco de dados
+      // ...
+
+      return done(null, user);
+    }
+  )
+);
+
+// Rota para iniciar o processo de autenticação com o Google
+
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+// Callback para autenticação com o Google
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
+  function (req, res) {
+    // Redirecionar ou enviar resposta JSON de sucesso
+    res.redirect("/dashboard");
+  }
+);
+
+// Rota para iniciar o processo de autenticação com o Facebook
+router.get(
+  "/auth/facebook",
+  passport.authenticate("facebook", { scope: ["public_profile", "email"] })
+);
+
+// Callback para autenticação com o Facebook
+router.get(
+  "/auth/facebook/callback",
+  passport.authenticate("facebook", { failureRedirect: "/" }),
+  function (req, res) {
+    // Redirecionar ou enviar resposta JSON de sucesso
+    res.redirect("/dashboard");
+  }
+);
+
+// Rota para criar usuário local
 
 router.post("/register", async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
@@ -82,7 +172,7 @@ router.post("/auth", async (req, res) => {
 
   // checar se a senha é igual
 
-  const checkPassword = await bcrypt.compare(password, user.password);
+  const checkPassword = bcrypt.compare(password, user.password);
 
   if (!checkPassword) {
     return res.status(422).json({ msg: "Senha invalida" });

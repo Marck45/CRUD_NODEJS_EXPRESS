@@ -3,7 +3,7 @@ const Company = require("../models/Company.js");
 
 const router = express.Router();
 
-// carrega todos os usuarios cadastrados
+// carrega todos os dados da empresa
 router.get("/", async (req, res) => {
   try {
     const company = await Company.find().sort();
@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-//cadastro da compania
+//cadastro da Empresa
 router.post("/", async (req, res) => {
   try {
     const {
@@ -83,7 +83,6 @@ router.put("/:_id", async (req, res) => {
     } = req.body;
 
     const company = {
-      _id,
       cnpj,
       razaoSocial,
       NomeFantasia,
@@ -104,12 +103,12 @@ router.put("/:_id", async (req, res) => {
     const updateCompany = await Company.findByIdAndUpdate(_id, company);
 
     if (!updateCompany) {
-      return res.status(404).json({ error: "Cliente não encontrado" });
+      return res.status(404).json({ error: "Empresa não encontrado" });
     }
 
-    return res.status(200).json({ message: "Cliente atualizado" });
+    return res.status(200).json({ message: "Empresa atualizado" });
   } catch (error) {
-    return res.status(500).json({ error: "Erro ao atualizar o cliente." });
+    return res.status(500).json({ error: "Erro ao atualizar o Empresa." });
   }
 });
 
