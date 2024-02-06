@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const salesSchema = new mongoose.Schema({
+    tenantId: {
+        type: String,
+        required: true,
+      },
     cod: String,
     name: String,
     email: String,

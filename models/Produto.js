@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const produtoSchema = new mongoose.Schema({
+    tenantId: {
+        type: String,
+        required: true,
+      },
     _id: Number,
     nome: String,
     valor: Number,

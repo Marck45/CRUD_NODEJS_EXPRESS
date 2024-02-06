@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const supplierSchema = new mongoose.Schema({
+    tenantId: {
+        type: String,
+        required: true,
+      },
     sales: String,
     work: String,
     email: String,

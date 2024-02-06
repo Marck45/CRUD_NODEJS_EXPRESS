@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require('body-parser');
 const dotenv = require("dotenv");
-const passport = require("passport");
 
 dotenv.config();
 
@@ -21,25 +20,36 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Middleware para extrair o ID do tenant a partir do token de autenticação
+const extractTenantId = (req, res, next) => {
+  const token = req.headers.authorization; // Assuming Auth0 token is in headers
+  // Extract tenant ID from the token and set it in the request object
+  req.tenantId = extractTenantIdFromToken(token);
+  next();
+};
+
+// Adicione esse middleware antes de suas rotas
+app.use(extractTenantId);
+
 
 // Rotas da API
 const personRoutes = require("./routes/pesonRoutes.js");
-app.use("/produto", personRoutes);
+app.use("/:tenantId/produto", personRoutes);
 
 const customerRoutes = require("./routes/customersRoutes.js");
-app.use("/users", customerRoutes);
+app.use("/:tenantId/users", customerRoutes);
 
 const supplierRoutes = require("./routes/supplierRoutes.js");
-app.use("/supplier", supplierRoutes);
+app.use("/:tenantId/supplier", supplierRoutes);
 
 const expensesRoutes = require("./routes/expensesRoutes.js");
-app.use("/expenses", expensesRoutes);
+app.use("/:tenantId/expenses", expensesRoutes);
 
 const salesRoutes = require("./routes/salesRoutes.js");
-app.use("/sales", salesRoutes);
+app.use("/:tenantId/sales", salesRoutes);
 
 const companyRoutes = require("./routes/companyRoutes.js");
-app.use("/company", companyRoutes);
+app.use("/:tenantId/company", companyRoutes);
 
 // Rota inicial
 app.get("/", (req, res) => {

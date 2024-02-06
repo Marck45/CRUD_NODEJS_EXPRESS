@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const companySchema = new mongoose.Schema({
+    tenantId: {
+        type: String,
+        required: true,
+      },
     cnpj: String,
     razaoSocial: String,
     NomeFantasia: String,

@@ -13,12 +13,12 @@ const upload = multer({
 
 // Rota para fazer o upload da imagem
 router.post('/', upload.single('photo'), uploadImage, async (req, res) => {
-
   try {
+    const tenantId = req.tenantId; // Obtém o ID do tenant do middleware
     const { _id, nome, valor, descricao, custo, marca, medida, quantidade, validade, lote } = req.body;
 
-     // Verifique se req.file contém a imagem
-     if (!req.file) {
+    // Verifique se req.file contém a imagem
+    if (!req.file) {
       console.log('Nenhuma imagem foi enviada.');
       return res.status(400).json({ error: 'Nenhuma imagem foi enviada.' });
     } 
@@ -39,6 +39,7 @@ router.post('/', upload.single('photo'), uploadImage, async (req, res) => {
       lote,
       photo: req.file ? req.file.buffer : undefined, // Armazena a imagem apenas se houver uma nova imagem na solicitação
       firebaseUrl: imageUrl,
+      tenantId,
     });
 
     // Salve o produto no banco de dados
@@ -54,16 +55,18 @@ router.post('/', upload.single('photo'), uploadImage, async (req, res) => {
 // Read - leitura de dados
 router.get('/', async (req, res) => {
   try {
-    const produtos = await Produto.find().sort({ _id: 1 });
+    const tenantId = req.tenantId;
+    const produtos = await Produto.find({ tenantId }).sort({ _id: 1 });
     res.status(200).json(produtos);
   } catch (error) {
-    res.status(500).json({ error: error });
+    res.status(500).json({ error: error.message });
   }
 });
 
 // Rota para filtrar produtos com base em critérios
 router.get('/filter', async (req, res) => {
   try {
+    const tenantId = req.tenantId;
     // Recupere o parâmetro de consulta "nome" da URL
     const nomeFiltrado = req.query.nome;
 
@@ -72,8 +75,8 @@ router.get('/filter', async (req, res) => {
       throw new Error('Você deve fornecer um parâmetro de consulta "nome".');
     }
 
-    // Filtrar os dados com base no nome
-    const produtosFiltrados = await Produto.find({ nome: { $regex: new RegExp(nomeFiltrado, 'i') } });
+    // Filtrar os dados com base no nome e tenantId
+    const produtosFiltrados = await Produto.find({ nome: { $regex: new RegExp(nomeFiltrado, 'i') }, tenantId });
 
     // Verifique se algum produto foi encontrado
     if (produtosFiltrados.length === 0) {
@@ -88,13 +91,12 @@ router.get('/filter', async (req, res) => {
   }
 });
 
-
-
-// criando rotas dinâmicas
+// Criando rotas dinâmicas
 router.get('/:id', async (req, res) => {
+  const tenantId = req.tenantId;
   const id = req.params.id;
   try {
-    const produto = await Produto.findOne({ _id: id });
+    const produto = await Produto.findOne({ _id: id, tenantId });
     if (!produto) {
       res.status(422).json({ message: 'Produto não encontrado' });
     }
@@ -107,6 +109,7 @@ router.get('/:id', async (req, res) => {
 // Update - atualizando dados (put, patch)
 router.put('/:_id', upload.single('photo'), uploadImage, async (req, res) => {
   try {
+    const tenantId = req.tenantId;
     const { _id, nome, valor, descricao, custo, marca, medida, quantidade, validade, lote } = req.body;
 
     const imageUrl = req.produtoFirebaseUrl; 
@@ -123,6 +126,7 @@ router.put('/:_id', upload.single('photo'), uploadImage, async (req, res) => {
       lote,
       photo: req.file ? req.file.buffer : undefined, // Atualiza a imagem apenas se houver uma nova imagem na solicitação
       firebaseUrl: imageUrl,
+      tenantId,
     };
 
     const updatedProduto = await Produto.findByIdAndUpdate(_id, produto);
@@ -140,12 +144,15 @@ router.put('/:_id', upload.single('photo'), uploadImage, async (req, res) => {
 
 // Delete - deletar dados
 router.delete('/:id', async (req, res) => {
+  const tenantId = req.tenantId;
   const id = req.params.id;
-  const produto = await Produto.findOne({ _id: id });
+  const produto = await Produto.findOne({ _id: id, tenantId });
+  
   if (!produto) {
     res.status(422).json({ message: 'Produto não encontrado' });
     return;
   }
+
   try {
     await Produto.deleteOne({ _id: id });
     res.status(200).json({ message: 'Produto removido com sucesso!' });

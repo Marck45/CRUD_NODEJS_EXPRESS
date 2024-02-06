@@ -6,8 +6,12 @@ const router = express.Router();
 // carrega todos os dados da empresa
 router.get("/", async (req, res) => {
   try {
-    const company = await Company.find().sort();
+    const tenantId = req.tenantId; // Obtém o ID do tenant do middleware
+
+    const company = await Company.find({ tenantId }).sort(); // Filtra por tenantId
+
     res.status(200).json(company);
+
   } catch (error) {
     res.status(500).json({ error: error });
   }
@@ -15,7 +19,11 @@ router.get("/", async (req, res) => {
 
 //cadastro da Empresa
 router.post("/", async (req, res) => {
+
   try {
+
+    const tenantId = req.tenantId; // Obtém o ID do tenant do middleware
+
     const {
       cnpj,
       razaoSocial,
@@ -50,6 +58,7 @@ router.post("/", async (req, res) => {
       cidade,
       bairro,
       address,
+      tenantId
     });
 
     await company.save();
@@ -63,6 +72,8 @@ router.post("/", async (req, res) => {
 // rota para atualizar company
 router.put("/:_id", async (req, res) => {
   try {
+    const tenantId = req.tenantId; // Obtém o ID do tenant do middleware
+
     const {
       _id,
       cnpj,
@@ -98,6 +109,7 @@ router.put("/:_id", async (req, res) => {
       cidade,
       bairro,
       address,
+      tenantId,
     };
 
     const updateCompany = await Company.findByIdAndUpdate(_id, company);
