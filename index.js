@@ -62,6 +62,7 @@ const supplierRoutes = require("./routes/supplierRoutes.js");
 const expensesRoutes = require("./routes/expensesRoutes.js");
 const salesRoutes = require("./routes/salesRoutes.js");
 const companyRoutes = require("./routes/companyRoutes.js");
+const formLeadsRoutes = require("./routes/formLeadsRoutes.js");
 
 app.use("/:tenantId/produto", checkJwt, personRoutes); // Protegido com autenticação do Auth0
 app.use("/:tenantId/users", checkJwt, customerRoutes); // Protegido com autenticação do Auth0
@@ -69,6 +70,7 @@ app.use("/:tenantId/supplier", checkJwt, supplierRoutes); // Protegido com auten
 app.use("/:tenantId/expenses", checkJwt, expensesRoutes); // Protegido com autenticação do Auth0
 app.use("/:tenantId/sales", checkJwt, salesRoutes); // Protegido com autenticação do Auth0
 app.use("/:tenantId/company", checkJwt, companyRoutes); // Protegido com autenticação do Auth0
+app.use("/leads", formLeadsRoutes);
 
 // Rota inicial
 app.get("/", (req, res) => {
